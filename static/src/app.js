@@ -78,6 +78,9 @@ var App = function (_React$Component) {
                 sample.sort(_this2.compare);
                 _this2.setState({ players: sample });
                 source.addEventListener('loginEvent', _this2.loginHandler);
+                $(document).ready(function () {
+                    $(".head").tooltip({ html: true });
+                });
             }).catch(function (error) {
                 console.log(error);
             });

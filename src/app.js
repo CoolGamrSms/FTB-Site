@@ -64,6 +64,9 @@ class App extends React.Component {
                 sample.sort(this.compare);
                 this.setState({players: sample});
                 source.addEventListener('loginEvent', this.loginHandler); 
+                $(document).ready(function() {
+                    $(".head").tooltip({html: true});
+                });
             })
             .catch(function(error) {
                 console.log(error);
