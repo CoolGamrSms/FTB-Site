@@ -14,7 +14,12 @@ var Player = function (_React$Component) {
     function Player(props) {
         _classCallCheck(this, Player);
 
-        return _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, props));
+
+        _this.state = {
+            timeOff: moment.unix(_this.props.seen).utc().fromNow()
+        };
+        return _this;
     }
 
     _createClass(Player, [{
@@ -30,18 +35,36 @@ var Player = function (_React$Component) {
     }, {
         key: "componentDidUpdate",
         value: function componentDidUpdate() {
-            var offset = moment().local().utcOffset();
-            var a = moment.unix(this.props.seen).utc().subtract(offset, 'minutes');
-            var myState = this.props.gamestate ? "Online" : a.fromNow();
+            var myState = this.props.gamestate ? "Online" : this.state.timeOff;
             var $me = $("#" + this.props.uuid);
             $me.tooltip('hide').attr('data-original-title', this.props.user + " <br> " + myState).attr('title', null);
         }
     }, {
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            this.timerID = setInterval(function () {
+                return _this2.tick();
+            }, 30000);
+        }
+    }, {
+        key: "componentWillUnmount",
+        value: function componentWillUnmount() {
+            clearInterval(this.timerID);
+        }
+    }, {
+        key: "tick",
+        value: function tick() {
+            this.setState({
+                timeOff: moment.unix(this.props.seen).utc().fromNow()
+            });
+        }
+    }, {
         key: "render",
         value: function render() {
-            var offset = moment().local().utcOffset();
-            var a = moment.unix(this.props.seen).utc().subtract(offset, 'minutes');
-            var myState = this.props.gamestate ? "Online" : a.fromNow();
+            var a = moment.unix(this.props.seen).utc();
+            var myState = this.props.gamestate ? "Online" : this.state.timeOff;
             return React.createElement(
                 "div",
                 { className: "fadecontainer" },

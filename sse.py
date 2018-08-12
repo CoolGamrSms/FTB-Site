@@ -88,7 +88,7 @@ class QueryDaemon(threading.Thread):
             status = this.server.status()
             if status.players.online > 0:
                 for p in status.players.sample:
-                    players[p.id] = Player(p.name, p.id, datetime.now())
+                    players[p.id] = Player(p.name, p.id, datetime.utcnow())
                     now_online.add(p.id)
 
             for p in now_online.difference(online_ids):

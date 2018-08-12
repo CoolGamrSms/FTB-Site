@@ -3,6 +3,9 @@
 class Player extends React.Component {
 constructor(props) {
     super(props);
+    this.state = {
+        timeOff: moment.unix(this.props.seen).utc().fromNow()
+        };
 }
 
 minotar() {
@@ -14,17 +17,31 @@ minotar_helm() {
 }
 
 componentDidUpdate() {
-    var offset = moment().local().utcOffset();
-    var a = moment.unix(this.props.seen).utc().subtract(offset, 'minutes');
-    var myState = this.props.gamestate ? "Online" : a.fromNow();
+    var myState = this.props.gamestate ? "Online" : this.state.timeOff;
     var $me = $("#"+this.props.uuid);
     $me.tooltip('hide').attr('data-original-title', this.props.user+" <br> "+myState).attr('title', null);
 }
 
+componentDidMount() {
+    this.timerID = setInterval(
+        () => this.tick(),
+        30000
+    );
+}
+
+componentWillUnmount() {
+    clearInterval(this.timerID);
+}
+
+tick() {
+    this.setState({
+        timeOff: moment.unix(this.props.seen).utc().fromNow()
+    });
+}
+
 render() {
-    var offset = moment().local().utcOffset();
-    var a = moment.unix(this.props.seen).utc().subtract(offset, 'minutes');
-    var myState = this.props.gamestate ? "Online" : a.fromNow();
+    var a = moment.unix(this.props.seen).utc();
+    var myState = this.props.gamestate ? "Online" : this.state.timeOff;
     return (
     <div className="fadecontainer">
     <img src={this.minotar()} className={"head "+(this.props.gamestate ? "online" : "offline")} />
